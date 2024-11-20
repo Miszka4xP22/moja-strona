@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autor</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            color: white;
+            background-color: black;
+        }
+        .container {
+            position: relative;
+            z-index: 1;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+        h1 {
+            color: #00ff00;
+        }
+        p {
+            color: #00ff00;
+        }
+        .matrix {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+        .matrix span {
+            color: #00ff00;
+            white-space: nowrap;
+            position: absolute;
+            bottom: 100%;
+            animation: fall linear infinite;
+        }
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="matrix"></div>
+    <div class="container">
+        <h1>Autor</h1>
+        <p>Z wykształcenia jestem socjologiem. Pracuję w European Homecare jako pracownik społeczny i doradca dla osób zamieszkujących ośrodek. Na co dzień wspieram mieszkańców w procesie szeroko rozumianej integracji w Niemczech.</p>
+    </div>
+
+    <script>
+        const matrixContainer = document.querySelector('.matrix');
+        const characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%^&*()*&^%+-/';
+        const fontSize = 16; // Rozmiar czcionki
+        const columns = Math.floor(window.innerWidth / fontSize);
+        const drops = [];
+
+        for (let x = 0; x < columns; x++) {
+            drops[x] = 1; // Początkowa pozycja dla każdej kolumny
+            const span = document.createElement('span');
+            span.style.left = x * fontSize + 'px';
+            span.style.fontSize = fontSize + 'px';
+            matrixContainer.appendChild(span);
+            setInterval(() => {
+                const text = characters.charAt(Math.floor(Math.random() * characters.length));
+                span.textContent = text;
+                span.style.bottom = drops[x] * fontSize + 'px';
+                if (drops[x] * fontSize > window.innerHeight && Math.random() > 0.975) {
+                    drops[x] = 0; // Resetuj pozycję
+                }
+                drops[x]++;
+            }, 100);
+        }
+    </script>
+</body>
+</html>

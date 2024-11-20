@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PULAPKI MYSLENIA - MiszKa</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-image: url('Bias.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            color: #fff;
+        }
+        #quiz-container {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 600px;
+            margin: auto;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        canvas {
+            margin-top: 20px;
+        }
+
+        /* Dodane style do podświetlania przycisków */
+        .correct-answer {
+            background-color: #4CAF50; /* zielony */
+            color: #fff;
+        }
+        .wrong-answer {
+            background-color: #FF4C4C; /* czerwony */
+            color: #fff;
+        }
+
+        /* Style dla modala */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgb(0,0,0); 
+            background-color: rgba(0,0,0,0.4); 
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; 
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%;
+            color: #000; /* Czarny tekst w modalu */
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        #matrix {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Umożliwia interakcję z innymi elementami */
+            overflow: hidden; /* Ukrywa przewijanie */
+        }
+
+        .matrix {
+            position: absolute;
+            white-space: nowrap;
+            font-size: 15px; /* Rozmiar czcionki */
+            color: #00ff00; /* Kolor tekstu */
+            opacity: 0.8; /* Przezroczystość */
+        }
+    </style>
+</head>
+<body>
+    <!-- Modal -->
+    <div id="introModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Błędy poznawcze</h2>
+            <p>Hej...! Tu MiszKa!</p>
+            <p>Witam Cię w Matrixie. Świecie pułapek myślenia.</p>
+            <p>To świat iluzji z którego tylko nieliczni potrafią się wydostać.</p>
+            <p>Czy jesteś gotowy go opuścić?</p>
+        </div>
+    </div>
+    <div id="quiz-container">
+        <h1>Pułapki myślenia</h1>
+        <p id="question">Pytanie</p>
+        <div id="answers">
+            <button onclick="checkAnswer(0)">Odpowiedź 1</button>
+            <button onclick="checkAnswer(1)">Odpowiedź 2</button>
+            <button onclick="checkAnswer(2)">Odpowiedź 3</button>
+            <button onclick="checkAnswer(3)">Odpowiedź 4</button>
+        </div>
+        <p id="score"></p>
+        <canvas id="scoreChart" width="300" height="200"></canvas>
+    </div>
+
+    <!-- Obrazek poniżej quizu -->
+    <img src="Bias.jpg" alt="Bias Image" style="width: 100 %; max-width: 600px; margin-top: 20px;">
+
+    <div id="matrix"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const questions = [
+            
+{
+
+        "question": "Czym jest Efekt autorytetu?",
+
+        "answers": [
+
+            "Ignorujesz opinie ekspertów",
+            "Ślepo ulegasz wpływowi osób o wyższym statusie lub wiedzy",
+            "Nie dostrzegasz wpływu większej grupy osób",
+            "Sądzisz, że reprezentujesz wyższy poziom wiedzy niż przeciętny człowiek"
+
+        ],
+
+        "correctAnswer": 1
+
+},
+{
+
+        "question": "Na czym polega Efekt czystej ekspozycji?",
+
+        "answers": [
+
+            "Sądzisz, że im więcej wiesz tym mniej rozumiesz",
+            "Unikasz sytuacji, które są nowe i nieznane",
+            "Pozytywnie oceniasz obiekt pod wpływem zwiększenia liczby kontaktów z nim.",
+            "Wierzysz, że influencer może zmienić Twoje życie na lepsze"
+
+        ],
+
+        "correctAnswer": 2
+
+},
+{
+
+        "question": "Czym jest Efekt izolacji?",
+
+        "answers": [
+
+            "Preferujesz informacje związane z grupą",
+            "Wierzysz, że informacje dobrze ukryte są bardziej wartościowe",
+            "Preferujesz pracę samodzielną niż w grupie",
+            "Lepiej zapamiętujesz obiekty wyróżniające się ze środowiska"
+
+        ],
+
+        "correctAnswer": 3
+
+},
+{
+
+        "question": "Na czym polega Efekt kontrastu?",
+
+        "answers": [
+
+            "Przypisujesz większą wartość rzeczom, które wyróżniają się jaskrawym kolorem",
+            "Masz skłonność do ignorowania podobnych rzeczy lub sytuacji",
+            "To subiektywne zwiększenie lub zmniejszenie obserwowanych cech obiektu w porównaniu z wcześniej obserwowanym obiektem.",
+            "Sądzisz, że mózg działa lepiej w warunkach stresu niż gdy jest nadmiernie zrelaksowany"
+
+        ],
+
+        "correctAnswer": 2
+
+},
+{
+
+        "question": "Czym jest Efekt litery z imienia?",
+
+        "answers": [
+
+            "Masz tendencję do preferowania liter występujących w imieniu lub nazwisku.",
+            "Masz tendencję do rozmawiania z osobami, których imiona brzmią podobnie do Twojego",
+            "Przejawiasz niechęć wobec imion pochodzących z języków obcych",
+            "Przypisujesz większą wartość rzeczom podpisanym Twoim imieniem"
+
+        ],
+
+        "correctAnswer": 0
+
+},
+{
+
+        "question": "Czym jest Błąd niepotrzebnych informacji?",
+
+        "answers": [
+
+            "Unikasz danych, które są mniej popularne w Internecie",
+            "Zbierasz dodatkowe informacje nawet wtedy, gdy nie mogą one mieć wpływu na decyzję.",
+            "Masz skłonność do ignorowania kluczowych informacji",
+            "Jesteś przekonany, że każda informacja jest wartościowa"
+
+        ],
+
+        "correctAnswer": 1
+
+},
+{
+
+        "question": "Na czym polega Efekt Pollyanny?",
+
+        "answers": [
+
+            "Pamiętasz informacje wyłącznie sprzeczne ze zdrowym rozsądkiem",
+            "Masz tendencję do ignorowania faktów",
+            "Preferujesz negatywne informacje",
+            "Myślisz głównie o pozytywach, ignorując aspekty przykre lub nieprzyjemne w danej sytuacji"
+
+        ],
+
+        "correctAnswer": 3
+
+},
+{
+
+        "question": "Czym jest Błąd pominięcia?",
+
+        "answers": [
+
+            "Oceniasz szkodliwe działania jako gorsze i bardziej niemoralne, niż równie szkodliwy brak działania i bezczynność",
+            "Oceniasz swoje działania przez pryzmat osobistych doświadczeń pomijając nowe okoliczności",
+            "Nie unikasz trudnych sytuacji bo wierzysz, że złe rzeczy przytrafiają się wyłącznie złym ludziom",
+            "Pamiętasz jedynie pozytywne aspekty podjętej wcześniej decyzji"
+
+        ],
+
+        "correctAnswer": 0
+
+},
+{
+
+        "question": "Na czym polega Efekt posiadania?",
+
+        "answers": [
+
+            "Przypisujesz wyższą wartość rzeczom, które są Twoje niż identycznym, które do Ciebie nie należą",
+            "Masz tendencję do ignorowania wartości cudzych przedmiotów wierząc w ich negatywną moc oddziaływania na Ciebie",
+            "Preferujesz rzeczy nowe wierząc, że są wyznacznikiem Twojej wartości",
+            "Przejawiasz skłonność do pozbywania się cudzych rzeczy"
+
+        ],
+
+        "correctAnswer": 0
+
+},
+{
+
+        "question": "Czym jest Błąd przywiązania?",
+
+        "answers": [
+
+            "Preferujesz nowe doświadczenia",
+            "Przywiązujesz się do miejsca zamieszkania",
+            "Wybierasz głównie rzeczy, które są popularne wśród Twoich znajomych",
+            "Korzystasz ze zbyt mało różnorodnych źródeł informacji"
+
+        ],
+
+        "correctAnswer": 3
+
+},
+{
+
+        "question": "Na czym polega Efekt pseudopewności?",
+
+        "answers": [
+
+            "Unikasz ryzyka w dążeniu do pozytywnych rezultatów, a szukasz ryzyka przy dążeniu do uniknięcia analogicznych negatywnych rezultatów.",
+            "Przeceniasz wpływ swoich działań myśląc, że to gwarantuje sukces",
+            "Zaniżasz swoje umiejętności w ocenie ryzyka",
+            "Unikasz decyzji z obawy o poniesienie porażki"
+
+        ],
+
+        "correctAnswer": 0
+
+},
+{
+    question: "Czym jest Błąd skupienia?",
+    answers: [
+        "Przecenianiasz znaczenie pozytywnych informacji dla Twojego życia",
+        "Zwracasz nadmierną uwagę na jeden aspekt informacji i ignorujesz inne.", // poprawna
+        "Pamiętasz tylko negatywne strony swoich decyzji",
+        "Masz tendencję do ignorowania szczegółów"
+    ],
+    correctAnswer: 1
+},
+{
+    question: "Na czym polega Efekt status quo?",
+    answers: [
+        "Masz skłonnością do podejmowania ryzyka",
+        "Masz tendencję do akceptowania rzeczy takimi, jakimi aktualnie są.", // poprawna
+        "Uważasz, że każda zmiana jest zmianą na dobre",
+        "Preferujesz stare rozwiązania dla nowych problemów"
+    ],
+    correctAnswer: 1
+},
+{
+    question: "Czym jest Błąd ślepej plamki?",
+    answers: [
+        "Niezauważasz błędów we własnej ocenie rzeczywistości", // poprawna
+        "Dostrzegasz jedynie pozytywne aspekty deycyzji innych",
+        "Masz skłonność do krytyki własnych decyzji",
+        "Brakuje Ci obiektywnej oceny innych"
+    ],
+    correctAnswer: 0
+},
+{
+    question: "Na czym polega Efekt wspierania decyzji?",
+    answers: [
+        "Masz tendencję do unikania informacji, które mogą podważyć Twoją decyzję",
+        "Zachowujesz dystans do każdej podjętej już decyzji",
+        "Masz skłonność do lepszego pamiętania argumentów za niż przeciw podjętej decyzji", // poprawna
+        "Sądzisz, że każda pojedyńcza decyzja wymaga wsparcia innych ludzi"
+    ],
+    correctAnswer: 2
+},
+{
+    question: "Czym jest Efekt wyniku?",
+    answers: [
+        "Preferujesz decyzje, które mają pozytywny wpływ na Twoje dobre zamopoczucie",
+        "Oceniasz decyzję na podstawie znanych później rezultatów, zamiast informacji znanych w momencie podejmowania decyzj", // poprawna
+        "Zwracasz uwagę tylko na końcowe efekty decyzji",
+        "Ocenianiasz decyzje na podstawie wyników uzyskanych przez osoby, które podejmowały analogiczną decyzję"
+    ],
+    correctAnswer: 1
+},
+{
+    question: "Na czym polega Efekt wyświadczonej przysługi?",
+    answers: [
+        "Masz skłonność do unikania proszenia o pomoc",
+        "Zapominasz o osobach, które Ci pomogły",
+        "Masz tendencję do zmiany postawy na pozytywną w stosunku do osób, którym pomogłeś", // poprawna
+        "Nadmiernie angażujesz się w pomaganie innym ludziom, zapominając o sobie"
+    ],
+    correctAnswer: 2
+},
+{
+    question: "Czym jest Błąd wiarygodności?",
+    answers: [
+        "Nadmiernie ufasz autorytetom", // poprawna
+        "Unikasz wiarygodnych źródeł informacji",
+        "Zaniżasz znaczenia oficjalnych raportów",
+        "Preferujesz opinie ludzi z bliskiego otoczenia"
+    ],
+    correctAnswer: 0
+},
+{
+    question: "Na czym polega Efekt zaprzeczania?",
+    answers: [
+        "Masz tendencję udawania, że opinie innych ludzi są dla Ciebie obojętne",
+        "Masz skłonność do preferowania informacji potwierdzających Twoje wyobrażenia o świecie", // poprawna
+        "Masz skłonność do preferowania osób, które Cię nie lubią",
+        "Szybko zapominasz drastyczne treści obejrzane w Internecie, zaprzeczając ich prawdziwości"
+    ],
+    correctAnswer: 1
+},
+{
+        question: "Na czym polega Zjawisko G.I. Joe?",
+        answers: [
+            "Sądzisz, że sama wiedza wystarczy, by zmienić zachowanie", // poprawna
+            "Ignorujesz wiedzę zdobytą w dzieciństwie",
+            "Uważasz, że nabyta wiedza jest niezmienna",
+            "Ignorujesz własne doświadczenia z przeszłości"
+        ],
+        correctAnswer: 0
+},
+{
+        question: "Na czym polega Błąd asocjacji?",
+        answers: [
+            "Łączysz dwa niepowiązane zdarzenia w jeden ciąg przyczynowo-skutkowy", // poprawna
+            "Wybierasz informacje, które potwierdzają Twoje poglądy",
+            "Ignorujesz losowość zdarzeń",
+            "Nadmiernie ufasz w prognozy"
+        ],
+        correctAnswer: 0
+},
+{
+        question: "Czym jest Błąd koniunkcji?",
+        answers: [
+            "Masz tendencję do przeceniania prawdopodobieństwa wystąpienia jednocześnie dwóch wydarzeń", // poprawna
+            "Masz skłonnością do ignorowania pojedynczych zdarzeń",
+            "Oczekujesz, że zdarzenia wystąpią niezależnie od siebie",
+            "Ignorujesz prawdopodobieństwo dla jednej cechy"
+        ],
+        correctAnswer: 0
+},
+{
+        question: "Czym jest Efekt antropiczny?",
+        answers: [
+            "Jesteś przekonany, że obserwacja może zmienić wynik", 
+            "Twierdzisz, że świat jest zrozumiały tylko dzięki jego obserwatorowi", // poprawna
+            "Przypisujesz cechy ludzkie przypadkowym wydarzeniom",
+            "Ignorujesz subiektywność w ocenie zdarzeń"
+        ],
+        correctAnswer: 1
+},
+{
+        question: "Na czym polega Efekt obserwatora?",
+        answers: [
+            "Zniekształcasz wynik eksperymentu poprzez samą obserwację", // poprawna
+            "Sądzisz, że obserwacja wpływa na decyzje innych osób",
+            "Uważasz, że inni ludzie obserwują nasze zachowanie",
+            "Obawiasz się zachowywać swobodnie w obecności innych"
+        ],
+        correctAnswer: 0
+},
+{
+        question: "Co to jest Efekt pewności wstecznej?",
+        answers: [
+            "Myślisz, że przewidzenie przyszłości jest proste",
+            "Masz tendencję do oceniania zdarzeń jako bardziej przewidywalnych po ich zaistnieniu", // poprawna
+            "Masz skłonność do podejmowania działać opartych na wzorcach przeszłych doświadczeń",
+            "Wiarzysz, że wszystkie wydarzenia mają jasne przyczyny"
+        ],
+        correctAnswer: 1
+},
+{
+        question: "Czym jest Efekt polaryzacji?",
+        answers: [
+            "Tendencją do zaostrzania stanowiska po wysłuchaniu dowodów przeciwstawnych", // poprawna
+            "Odrzucasz poglądy mniejszości",
+            "Masz skłonność do uśredniania różnych opinii",
+            "Czujesz niepewność co do własnych poglądów"
+        ],
+        correctAnswer: 0
+},
+{
+        question: "Na czym polega Efekt potwierdzania?",
+        answers: [
+            "Oceniasz argumenty przez pryzmat własnych przekonań", // poprawna
+            "Masz tendencję do przekonywania innych bez dowodów",
+            "Uważasz, że każdy ma prawo do własnych opinii",
+            "Masz skłonność do przyjmowania faktów za oczywiste"
+        ],
+        correctAnswer: 0
+},
+{
+        question: "Czym jest Efekt skupienia uwagi?",
+        answers: [
+            "Skłonność do nadmiernego uwzględniania wybranych informacji", // poprawna
+            "Ignorowanie wpływu zewnętrznych bodźców",
+            "Poczucie, że wszystkie aspekty są równie ważne",
+            "Koncentracją tylko na nieistotnych wątkach"
+        ],
+        correctAnswer: 0
+},
+{
+        question: "Na czym polega Błąd subaddytywności?",
+        answers: [
+            "Jesteś przekonany, że suma części jest mniejsza niż całość", // poprawna
+            "Niedocenianiasz znaczenia pojedynczych składników",
+            "Ignorujesz małe elementy w większej całości",
+            "Masz tendencję do zawyżania wartości sumy części"
+        ],
+        correctAnswer: 0
+},
+{
+        question: "Czym jest Heurystyka reprezentatywności?",
+        answers: [
+            "To skłonność do oceny obiektu na podstawie podobieństwa do prototypu", // poprawna
+            "Odrzucaniem cech charakterystycznych obiektu",
+            "Przekonaniem, że każdy obiekt musi być identyczny",
+            "Postrzeganiem rzeczywistości przez różowe okulary"
+        ],
+        correctAnswer: 0
+},
+{
+        question: "Na czym polega Heurystyka dostępności?",
+        answers: [
+            "To skłonność do oceniania prawdopodobieństwa na podstawie łatwości przypominania sobie podobnych przypadków", // poprawna
+            "Ocenianiem wartości prawdopodobieństwa na podstawie dostępnych danych",
+            "Przekonaniem, że bardziej dostępne informacje są bardziej wartościowe",
+            "Ignorowaniu trudnych do udowodnienia tez"
+        ],
+        correctAnswer: 0
+},
+{
+        question: "Co oznacza Heurystyka zakotwiczenia?",
+        answers: [
+            "Opierasz oceny na pierwszej informacji, nawet jeśli nie jest ona adekwatna", // poprawna
+            "Ignorujesz początkowe dane",
+            "Jesteś przekonany, że tylko początkowe dane są istotne",
+            "Masz skłonność do pomijania nowości na rzecz początkowych informacji"
+        ],
+        correctAnswer: 0
+},
+{
+        question: "Na czym polega Iluzja grupowania?",
+        answers: [
+            "Przekonaniu, że losowe zdarzenia występują w klastrach", // poprawna
+            "Tendencji do widzenia wzorców tam, gdzie ich nie ma",
+            "Odrzuceniu dowodów na losowość",
+            "Postrzeganiu przypadkowych wydarzeń jako powiązanych"
+        ],
+        correctAnswer: 0
+},
+{
+        question: "Czym jest Efekt hazardzisty?",
+        answers: [
+            "Wierzysz, że przyszłe zdarzenia są zależne od przeszłych, mimo że są losowe", // poprawna
+            "Ignorujesz wpływ przypadku na wyniki",
+            "Oczekujesz na kontynuację wzorca",
+            "Wiarzysz, że losowość jest przewidywalna"
+        ],
+        correctAnswer: 0
+},
+{
+        question: "Czym jest Pozytywna retrospekcja?",
+        answers: [
+            "Masz skłonność do pamiętania rzeczy bardziej pozytywnie niż były", // poprawna
+            "Przecenianiasz siłę negatywnych wspomnień",
+            "Skupiasz się na neutralnych aspektach wspomnień",
+            "Pamiętasz wydarzenia w ich negatywnej formie"
+        ],
+        correctAnswer: 0
+},
+{
+        question: "Na czym polega Zaniedbywanie miarodajności?",
+        answers: [
+            "Ignorujesz wartościowe informacje na rzecz stereotypów", // poprawna
+            "Skupiasz się na konkretnych dowodach",
+            "Zakładasz, że wszystkie źródła są równe",
+            "Odrzucasz miarodajne dane na rzecz ogółu"
+        ],
+        correctAnswer: 0
+},
+{
+        question: "Na czym polega Zjawisko Baader-Meinhof?",
+        answers: [
+            "Częściej zauważasz coś po pierwszym zetknięciu się z tym", // poprawna
+            "Ignorujesz podobne do siebie informacje",
+            "Oczekujesz powtarzalności nieistotnych zdarzeń",
+            "Skupiasz się na powtarzalnych elementach"
+        ],
+        correctAnswer: 0
+},
+{
+        question: "Na czym polega Błąd asocjacji?",
+        answers: [
+            "Łączeniu dwóch niepowiązanych zdarzeń w jeden ciąg przyczynowo-skutkowy", // poprawna
+            "Wybieraniu informacji, które potwierdzają nasze poglądy",
+            "Ignorowaniu losowości w wydarzeniach",
+            "Tendencji do nadmiernego zaufania w prognozy"
+        ],
+        correctAnswer: 0
+},
+{
+        question: "Czym jest Błąd koniunkcji?",
+        answers: [
+            "Masz skłonność do ignorowania pojedynczych zdarzeń",
+            "Masz tendencję do przeceniania prawdopodobieństwa wystąpienia jednocześnie dwóch wydarzeń", // poprawna
+            "Oczekujesz, że zdarzenia wystąpią niezależnie od siebie",
+            "Ignorujesz prawdopodobieństwo dla jednej cechy"
+        ],
+        correctAnswer: 1
+},
+{
+        question: "Czym jest Efekt antropiczny?",
+        answers: [
+            "Przekonaniem, że obserwacja może zmienić wynik", 
+            "Twierdzeniem, że świat jest zrozumiały tylko dzięki jego obserwatorowi", // poprawna
+            "Tendencją do przypisywania cech ludzkich przypadkowym wydarzeniom",
+            "Ignorowaniem subiektywności w ocenie zdarzeń"
+        ],
+        correctAnswer: 1
+},
+{
+        question: "Na czym polega Efekt obserwatora?",
+        answers: [
+            "Sądzisz, że inni ludzie nieustannie obserwują nasze zachowanie",
+            "Przeceniasz wpływ obserwacji na decyzje innych osób",
+            "Zniekształcasz wyniki eksperymentu oczekując określonego rezultatu", // poprawna
+            "Masz poczucie, że Twoje zachowanie zmienia się w obecności innych"
+        ],
+        correctAnswer: 2
+},
+{
+        question: "Co to jest Efekt pewności wstecznej?",
+        answers: [
+            "Masz skłonność do ufania w emocje",
+            "Masz tendencję do oceniania zdarzeń jako bardziej przewidywalnych po ich zaistnieniu", // poprawna
+            "Sądzisz, że przewidzenie przyszłości jest proste",
+            "Wiarzysz, że wszystkie wydarzenia mają jasne przyczyny"
+        ],
+        correctAnswer: 1
+},
+{
+        question: "Czym jest Efekt polaryzacji?",
+        answers: [
+            "Masz skłonność do uśredniania różnych opinii",
+            "Jesteś niepewny/a co do własnych poglądów",
+            "Odrzucasz poglądy mniejszościowe",
+            "Zaostrza się Twoje stanowisko po wysłuchaniu dowodów przeciwstawnych" // poprawna
+        ],
+        correctAnswer: 3
+},
+{
+        question: "Na czym polega Efekt przekonania?",
+        answers: [
+            "Przyjmujesz fakty za oczywiste",
+            "Starasz się przekonać innych do swoich racji bez dowodów",
+            "Oceniasz argumenty przez pryzmat własnych przekonań", // poprawna
+            "Sądzisz, że każdy ma prawo do własnych opinii"
+        ],
+        correctAnswer: 2
+},
+{
+        question: "Co to jest Efekt skupienia uwagi?",
+        answers: [
+            "Ignorujesz wpływ zewnętrznych bodźców",
+            "Koncentrujesz się tylko na jednych wątkach a pomijasz inne",
+            "Masz skłonność do nadmiernego uwzględniania wybranych informacji", // poprawna
+            "Uważasz, że wszystkie aspekty problemu są równie ważne"
+        ],
+        correctAnswer: 2
+},
+{
+        question: "Na czym polega Błąd subaddytywności?",
+        answers: [
+            "Ignorujesz małe elementy w większej całości",
+            "Masz tendencję do zawyżania wartości sumy części",
+            "Sądzisz, że suma części jest mniejsza niż całość", // poprawna
+            "Niedocenianiasz znaczenia pojedynczych składników"
+        ],
+        correctAnswer: 2
+},
+{
+        question: "Czym jest Heurystyka reprezentatywności?",
+        answers: [
+            "Postrzegasz rzeczywistości przez wybrane cechy",
+            "Masz skłonność do oceny na podstawie podobieństwa do prototypu", // poprawna
+            "Uważasz, że każdy obiekt musi być identyczny",
+            "Odrzucasz cechy charakterystyczne zjawisk"
+        ],
+        correctAnswer: 1
+},
+{
+        question: "Na czym polega Heurystyka dostępności?",
+        answers: [
+            "Ignorujesz trudne do znalezienia dowody",
+            "Ocenianiasz wartość na podstawie dostępnych danych",
+            "Masz skłonność do oceniania prawdopodobieństwa na podstawie łatwości przypominania sobie podobnych przypadków", // poprawna
+            "Myslisz, że bardziej dostępne informacje są bardziej wartościowe"
+        ],
+        correctAnswer: 2
+},
+{
+        question: "Co oznacza Heurystyka zakotwiczenia?",
+        answers: [
+            "Oparcie oceny na pierwszej informacji, nawet jeśli nie jest ona adekwatna", // poprawna
+            "Ignorowanie początkowych danych",
+            "Przekonanie, że tylko początkowe dane są istotne",
+            "Skłonność do pomijania nowości na rzecz początkowych informacji"
+        ],
+        correctAnswer: 0
+},
+{
+        question: "Na czym polega Iluzja grupowania?",
+        answers: [
+            "To tendencja do widzenia wzorców tam, gdzie ich nie ma",
+            "To przekonanie, że losowe zdarzenia występują w klastrach", // poprawna
+            "To odrzucenie dowodów na losowość",
+            "To postrzeganie przypadkowych wydarzeń jako powiązanych"
+        ],
+        correctAnswer: 1
+},
+{
+        question: "Czym jest Efekt hazardzisty?",
+        answers: [
+            "Oczekiwaniem na kontynuację wzorca",
+            "Wiarą, że losowość jest przewidywalna",
+            "Ignorowaniem wpływu przypadku na wyniki",
+            "Przekonaniem, że przyszłe zdarzenia są zależne od przeszłych, mimo że są losowe" // poprawna
+        ],
+        correctAnswer: 3
+},
+{
+        question: "Czym jest Pozytywna retrospekcja?",
+        answers: [
+            "Przecenianiem negatywnych wspomnień",
+            "Skupieniem na neutralnych aspektach wspomnień",
+            "Skłonnością do pamiętania rzeczy bardziej pozytywnie niż były", // poprawna
+            "Pamiętaniem wydarzeń w ich negatywnej formie"
+        ],
+        correctAnswer: 2
+},
+{
+        question: "Na czym polega Zaniedbywanie miarodajności?",
+        answers: [
+            "Ignorowaniu wartościowej informacji na rzecz stereotypów", // poprawna
+            "Zakładaniu, że wszystkie źródła są równe",
+            "Odrzuceniu miarodajnych danych na rzecz ogółu",
+            "Skupieniu na konkretnych dowodach"
+        ],
+        correctAnswer: 0
+},
+{
+        question: "Czym jest Zasada szczyt-koniec?",
+        answers: [
+            "Skupieniem się tylko na końcowej fazie zdarzenia",
+            "Zwracaniem uwagi wyłącznie na intensywność",
+            "Zapamiętywaniem tylko neutralnych chwil",
+            "Ocenianiem doświadczenia na podstawie jego najbardziej intensywnej chwili i zakończenia" // poprawna
+        ],
+        correctAnswer: 3
+},
+{
+        question: "Na czym polega Zjawisko Baader-Meinhof?",
+        answers: [
+            "Oczekujesz powtarzalności nieistotnych zdarzeń",
+            "Częściej zauważasz coś po pierwszym zetknięciu się z tym", // poprawna
+            "Ignorujesz podobne informacje",
+            "Skupiasz się na powtarzalnych elementach"
+        ],
+        correctAnswer: 1
+},
+{
+        question: "Czym jest Efekt zerowego ryzyka?",
+        answers: [
+            "Przekonaniem, że każde ryzyko jest akceptowalne",
+            "Skupieniem się na eliminacji małych ryzyk kosztem większych", // poprawna
+            "Poczuciem, że ryzyko zawsze jest niebezpieczne",
+            "Postrzeganiem ryzyka jako konieczności"
+        ],
+        correctAnswer: 1
+},
+{
+        question: "Czym jest Hiperboliczne obniżenie wartości?",
+        answers: [
+            "Skłonnością do przeceniania długoterminowych korzyści",
+            "Przekonaniem, że nagrody powinny być natychmiastowe", 
+            "Zjawiskiem, gdzie odległe nagrody są niedoceniane", // poprawna
+            "Preferowaniem wyższych nagród kosztem czasu"
+        ],
+        correctAnswer: 2
+},
+{
+        question: "Na czym polega Ignorowanie prawdopodobieństwa?",
+        answers: [
+            "Masz tendencję do ignorowania małych prawdopodobieństw", // poprawna
+            "Przejawiasz skłonność do przeceniania wpływu przypadków",
+            "Ufasz w możliwość zaistnienia wydarzenia o niskim prawdopodobieństwie",
+            "Odrzucasz prawdopodobieństwo na rzecz pewności"
+        ],
+        correctAnswer: 0
+},
+{
+        question: "Czym jest Iluzja pieniądza?",
+        answers: [
+            "Postrzegasz wartość pieniądza nie uwzględniając waluty",
+            "Uważasz, że więcej pieniędzy zawsze oznacza lepszy standard życia",
+            "Błędnie określasz wartości pieniądza (np. przy porównywanie cen), nie uwzględniając inflacji.", // poprawna
+            "Masz skłonność do inwestowania pieniędzy w wątpliwej jakości dobra"
+        ],
+        correctAnswer: 2
+},
+{
+        question: "Czym jest Iluzja wstrząsu?",
+        answers: [
+            "Przecenianiasz długość lub intensywności swoich przyszłych stanów emocjonalnych.", // poprawna
+            "Odrzucasz przyszłe wydarzenia jako nierealne",
+            "Masz skłonnością do przeceniania wagi wydarzeń z przeszłości",
+            "Sądzisz, że współczesne wydarzenia mają zawsze największe znaczenie"
+        ],
+        correctAnswer: 0
+},
+{
+        question: "Na czym polega Klątwa wiedzy?",
+        answers: [
+            "Masz trudność w wyobrażeniu sobie braku wiedzy innych osób", // poprawna
+            "Przecenianiasz wpływ wiedzy na decyzje",
+            "Ignorujesz swoją wiedzę przy podejmowaniu decyzji",
+            "Oczekujesz, że wszyscy ludzie wiedzą to samo"
+        ],
+        correctAnswer: 0
+},
+{
+        question: "Czym jest Niechęć do straty?",
+        answers: [
+            "Strachem przed utratą kontroli",
+            "Tendencją do unikania straty nawet kosztem zysku", // poprawna
+            "Uważaniem, że każda strata jest nieodwracalna",
+            "Lękiem przed ryzykiem finansowym"
+        ],
+        correctAnswer: 1
+},
+{
+        question: "Czym jest Racjonalizacja zakupu?",
+        answers: [
+            "Wyszukiwaniem powodów dla zakupu po fakcie", // poprawna
+            "Planowaniem wydatków z dużą uwagą",
+            "Zakładaniem, że każdy zakup musi być rozsądny",
+            "Skłonnością do zakupów w impulsie"
+        ],
+        correctAnswer: 0
+},
+{
+        question: "Co oznacza Selektywna percepcja?",
+        answers: [
+            "Wybierasz tylko wygodne informacje", // poprawna
+            "Ignorujesz informacje smutne",
+            "Postrzegasz rzeczywistość w sposób neutralny",
+            "Masz silne przekonanie o obiektywności swoich opinii"
+        ],
+        correctAnswer: 0
+},
+{
+        question: "Na czym polega Skrzywienie zawodowe?",
+        answers: [
+            "Przekonaniu, że wszyscy powinni myśleć tak samo",
+            "Oczekiwaniu, że wszyscy rozumieją pracę w ten sam sposób",
+            "Postrzeganiu świata przez pryzmat własnego zawodu", // poprawna
+            "Uważaniu, że praca nie wpływa na osobowość"
+        ],
+        correctAnswer: 2
+},
+{
+        question: "Czym jest Zasada podczepiania?",
+        answers: [
+            "Przyłączaniem się do opinii większości", // poprawna
+            "Ignorowaniem mniejszościowych poglądów",
+            "Skłonnością do liderowania grupie",
+            "Odrzuceniem indywidualizmu na rzecz grupy"
+        ],
+        correctAnswer: 0
+},
+{
+        question: "Na czym polega Zjawisko G.I. Joe?",
+        answers: [
+            "Przekonaniu, że sama wiedza wystarczy, by zmienić zachowanie", // poprawna
+            "Tendencji do ignorowania wiedzy zdobytej w dzieciństwie",
+            "Uważaniu, że nabyta wiedza jest niezmienna",
+            "Ignorowaniu doświadczeń z przeszłości"
+        ],
+        correctAnswer: 0
+},
+{
+        question: "Co to jest Złudzenie kontroli?",
+        answers: [
+            "Tendencją do przeceniania swojej kontroli nad sytuacjami", // poprawna
+            "Uważaniem, że każda sytuacja jest przewidywalna",
+            "Przekonaniem o niemożności kontroli sytuacji",
+            "Skłonnością do unikania ryzyka"
+        ],
+        correctAnswer: 0
+},
+{
+        question: "Na czym polega Złudzenie planowania?",
+        answers: [
+            "Niedoszacowaniem czasu i zasobów na wykonanie zadania", // poprawna
+            "Planowaniem w sposób zbyt szczegółowy",
+            "Ignorowaniem alternatywnych możliwości wykonania zadania",
+            "Przekonaniem, że planowanie jest niepotrzebne"
+        ],
+        correctAnswer: 0
+}
+
+        ];
+        let currentQuestion = 0;
+        let score = 0;
+
+        function shuffleQuestions() {
+            questions.sort(() => Math.random() - 0.5);
+            console.log("Przetasowane pytania:", questions); // Log do sprawdzenia przetasowania
+        }
+
+        // Wywołanie przetasowania na początku
+        shuffleQuestions();
+
+        function loadQuestion() {
+            const questionEl = document.getElementById('question');
+            const answersEl = document.querySelectorAll('#answers button');
+
+            questionEl.innerText = questions[currentQuestion].question;
+            answersEl.forEach((button, index) => {
+                button.innerText = questions[currentQuestion].answers[index];
+                button.classList.remove('correct-answer', 'wrong-answer'); // Resetuj klasy
+            });
+        }
+
+        function checkAnswer(selectedAnswer) {
+            const buttons = document.querySelectorAll('#answers button');
+            if (selectedAnswer === questions[currentQuestion].correctAnswer) {
+                score++;
+                buttons[selectedAnswer].classList.add('correct-answer'); // Podświetlenie poprawnej odpowiedzi
+            } else {
+                buttons[selectedAnswer].classList.add('wrong-answer'); // Podświetlenie błędnej odpowiedzi
+                buttons[questions[currentQuestion].correctAnswer].classList.add('correct-answer'); // Podświetlenie poprawnej odpowiedzi
+            }
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                setTimeout(loadQuestion, 2000); // Przejdź do następnego pytania po 4 sekundach
+            } else {
+                setTimeout(showResults, 2000); // Pokaż wyniki po 4 sekundach
+            }
+        }
+
+        function showResults() {
+            document.getElementById('score').innerText = `Twój wynik: ${score} z ${questions.length}`;
+            generateChart();
+        }
+
+        function generateChart() {
+            const ctx = document.getElementById('scoreChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Wynik', 'Błędy'],
+                    datasets: [{
+                        label: 'Punkty',
+                        data: [score, questions.length - score],
+                        backgroundColor: ['#4CAF50', '#FF4C4C']
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Obsługa modala
+        var modal = document.getElementById("introModal");
+        var span = document.getElementsByClassName("close")[0];
+
+        // Wyświetlenie modala po załadowaniu strony
+        window.onload = function() {
+            modal.style.display = "block";
+            setTimeout(function() {
+                modal.style.display = "none";
+            }, 20000); // 20 sekund
+            loadQuestion(); // Załaduj pierwsze pytanie po zamknięciu modala
+        }
+
+        // Zamknięcie modala po kliknięciu M
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        loadQuestion();
+
+        // Efekt deszczu
+        const characters = '01';
+        const matrixContainer = document.getElementById('matrix');
+        const matrixColumns = Math.floor(window.innerWidth / 20); // Szerokość kolumn
+        const drops = Array.from({ length: matrixColumns }).fill(1); // Inicjalizacja kolumn
+
+        function createMatrix() {
+            drops.forEach((drop, index) => {
+                const span = document.createElement('span');
+                span.textContent = characters.charAt(Math.floor(Math.random() * characters.length));
+                span.style.left = `${index * 20}px`;
+                span.style.position = 'absolute';
+                span.style.top = `${Math.random() * window.innerHeight}px`;
+                span.className = 'matrix'; // Dodaj klasę do stylizacji
+                matrixContainer.appendChild(span);
+
+                function fall () {
+                    span.style.top = `${parseInt(span.style.top) + 1}px`;
+                    if (parseInt(span.style.top) > window.innerHeight) {
+                        span.style.top = '0';
+                        span.textContent = characters.charAt(Math.floor(Math.random() * characters.length));
+                    }
+                    requestAnimationFrame(fall);
+                }
+                fall();
+            });
+        }
+
+        createMatrix();
+    </script>
+</body>
+</html>
