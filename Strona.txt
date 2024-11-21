@@ -144,7 +144,7 @@
       </h3>
       <p>
        Ludzie o niskich umiejętnościach w danej dziedzinie przeceniają swoje umiejętności.
-       Ludzie o wysokich ich niedoceniają...
+       Ludzie o wysokich ich niedoceniają.
       </p>
      </div>
     </div>
