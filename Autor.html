@@ -3,78 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jak głęboka jest królicza nora?</title>
+    <title>Matrix Typing Effect</title>
     <style>
         body {
             margin: 0;
             overflow: hidden;
-            font-family: 'Courier New', Courier, monospace; /* Czcionka monospace dla efektu Matrix */
-            color: #00ff00; /* Zielony kolor tekstu */
             background-color: black;
-            background-image: url('Brain.jpg'); /* Podmień 'Brain.jpg' na ścieżkę do swojego obrazka */
-            background-size: cover;
-            background-position: center;
-            position: relative;
-            height: 100vh; /* Wysokość widoku */
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            color: #0F0; /* Zielony kolor tekstu */
+            font-family: monospace; /* Czcionka monospaced dla efektu */
+            font-size: 24px; /* Rozmiar czcionki */
         }
-        .container {
-            position: relative;
-            z-index: 1;
-            padding: 20px;
-            background-color: rgba(0, 0, 0, 0.7);
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-            text-align: left; /* Wyśrodkowanie tekstu */
-            max-width: calc(600px + 2cm); /* Zwiększenie maksymalnej szerokości o 1 cm */
+
+        .matrix {
+            position: absolute;
+            top: 0; /* Ustawienie w lewym górnym rogu */
+            left: 0; /* Ustawienie w lewym górnym rogu */
+            white-space: pre; /* Zachowanie białych znaków i nowych linii */
         }
-        h1 {
-            color: #00ff00;
-            font-size: 18px; /* Zmniejszono rozmiar czcionki nagłówka */
-            white-space: pre-wrap; /* Umożliwia łamanie linii */
-        }
-        p {
-            margin: 0; /* Usunięcie domyślnego marginesu dla akapitów */
-            line-height: 1.5; /* Ułatwienie czytania przez zwiększenie odstępu między liniami */
-            font-size: 16px; /* Zmniejszono rozmiar czcionki akapitów */
+
+        .fade {
+            opacity: 0;
+            transition: opacity 1s ease-out; /* Czas wygasania */
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 id="typing"></h1>
-    </div>
-
+    <div class="matrix"></div>
     <script>
-        const fullText = [
-            "Wake up, Neo... Tu MiszKa.",
-            "Cieszę się, że odwiedzasz moją stronę. Jej celem jest zwiększenie świadomości, zarówno mojej, jak i wszystkich, którzy tu zaglądają. Chcę pomóc odkrywać pułapki myślenia – błędy poznawcze, które codziennie kształtują naszą percepcję rzeczywistości, czasem w sposób, którego nawet nie zauważamy.",
-            "Strona jest efektem mojej współpracy z AI, która wygenerowała kod. Na co dzień obserwuję, jak silne są nasze wewnętrzne przekonania, które wpływają na postrzeganie świata – czasem zupełnie nieświadomie. Błędami poznawczymi zainteresowałem się na zajęciach z psychologii społecznej, widząc je jako subtelną formę życia w iluzji. Jak w Matrixie, nasze umysły tworzą rzeczywistość, która nie zawsze odpowiada temu, co jest prawdziwe.",
-            "Pamiętasz? 'To nie łyżka się wygina, lecz Twój umysł'? Żyjąc w Matrixie nieświadomie wyginamy rzeczywistość, by dopasować ją do naszych przekonań. Moim celem jest pomóc Wam, drodzy odwiedzający, w przezwyciężeniu tych niewidzialnych sił. Mam nadzieję, że znajdziecie tu inspirację, by przyjrzeć się swoim myślom i rozpoznać momenty, w których sami stwarzamy iluzję."
+        const sentences = [
+            "Wake up, Neo...",
+            "The Matrix has you...",
+            "Follow the white rabbit.",
+            "Knock, knock, Neo.",
+            "Pamiętasz? To nie łyżka się wygina, tylko Twój umysł.",
+            "Żyjemy w więzieniu bez ścian i krat.",
+            "Tym więzieniem są nasze umysły.",
+            "Chciałbym pomóc Ci wydostać się z niego.",
+            "Czy to Ty kontrolujesz swoje myśli? A może to one kontrolują Ciebie?",
+            "Ta strona powstała z myślą o Tobie.",
+            "O poszukujących prawdy.",
+            "Cieszę się, że tu jesteś.",
+            "Włóż swoje życie w nawias żeby uwolnić się od luzji."
         ];
+        
+        const matrixContainer = document.querySelector('.matrix');
+        const typingSpeed = 200; // Zmniejszono czas między literami (szybciej)
+        const sentencePause = 5000; // Czas przerwy po każdym zdaniu
 
-        let textIndex = 0; // Indeks aktualnego akapitu
-        let charIndex = 0; // Indeks aktualnego znaku
-        const typingElement = document.getElementById('typing');
+        let sentenceIndex = 0; // Indeks do śledzenia pozycji w zdaniach
+        let charIndex = 0; // Indeks do śledzenia pozycji w literach
 
-        function typeParagraph() {
-            if (textIndex < fullText.length) {
-                if (charIndex < fullText[textIndex]. length) {
-                    typingElement.textContent += fullText[textIndex].charAt(charIndex);
-                    charIndex++;
-                    setTimeout(typeParagraph, 100); // Prędkość pisania
-                } else {
-                    typingElement.textContent += '\n'; // Nowa linia po akapicie
-                    charIndex = 0; // Reset indeksu znaku dla następnego akapitu
-                    textIndex++; // Przejście do następnego akapitu
-                    setTimeout(typeParagraph, 1000); // Pauza przed rozpoczęciem następnego akapitu
-                }
+        function typeSentence() {
+            if (charIndex < sentences[sentenceIndex].length) {
+                matrixContainer.textContent += sentences[sentenceIndex][charIndex]; // Dodaj znak
+                charIndex++;
+                setTimeout(typeSentence, typingSpeed); // Wywołaj funkcję rekurencyjnie
+            } else {
+                setTimeout(eraseSentence, sentencePause); // Po zakończeniu zdania, rozpocznij usuwanie
             }
         }
 
-        typeParagraph(); // Rozpoczęcie efektu pisania
+        function eraseSentence() {
+            matrixContainer.classList.add('fade'); // Dodaj klasę wygasania
+            setTimeout(() => {
+                matrixContainer.textContent = ''; // Usuń całe zdanie
+                matrixContainer.classList.remove('fade'); // Usuń klasę wygasania
+                sentenceIndex++; // Przejdź do następnego zdania
+                charIndex = 0; // Zresetuj indeks liter
+                if (sentenceIndex < sentences.length) {
+                    setTimeout(typeSentence, 500); // Przerwa przed rozpoczęciem nowego zdania
+                }
+            }, 1000); // Czas na wygasanie
+        }
+
+        typeSentence(); // Rozpocznij efekt pisania
     </script>
 </body>
 </html>
