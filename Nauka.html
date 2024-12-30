@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Błędy Poznawcze - Matrix</title>
+    <style>
+        body {
+            background-color: black;
+            color: #00ff00;
+            font-family: 'Courier New', Courier, monospace;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            margin: 5% auto;
+            width: 80%;
+        }
+        h1, h2 {
+            text-shadow: 0 0 5px #00ff00;
+        }
+        .bias {
+            background-color: rgba(0, 255, 0, 0.1);
+            border: 1px solid #00ff00;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 0 10px #00ff00;
+            cursor: pointer;
+            display: none;
+        }
+        .example {
+            color: #66ff66;
+            font-style: italic;
+        }
+        .glitch {
+            color: red;
+            font-weight: bold;
+        }
+        .intro {
+            white-space: pre-wrap;
+	    font-size: 2em;
+        }
+    </style>
+    <script>
+        const biases = [
+            {
+                title: "Efekt potwierdzenia",
+                description: "Skłonność do szukania, interpretowania i zapamiętywania informacji w sposób, który potwierdza nasze przekonania.",
+                example: "Wiedziałem, że ta dieta działa, bo przeczytałem trzy artykuły potwierdzające jej skuteczność."
+            },
+            {
+                title: "Efekt Dunninga-Krugera",
+                description: "Osoby o niskich kompetencjach przeceniają swoje umiejętności, a osoby bardzo kompetentne ich nie doceniają.",
+                example: "Prawie nic o tym nie wiem, ale jestem pewien, że mam rację."
+            },
+            {
+                title: "Awersja do straty",
+                description: "Strata boli bardziej niż cieszy zysk o tej samej wartości.",
+                example: "Nie sprzedam tej akcji, mimo że traci na wartości, bo nie chcę stracić pieniędzy."
+            },
+	    {
+		title:"Efekt autorytetu.",
+		description:"Poleganie wyłącznie na autorytecie.",
+		example:"Papież się nie myli bo jest Papieżem."
+	    }
+		
+        ];
+        
+        let text = "Oto Matrix Błędów Poznawczych.\n\nWiesz już, że świat nie jest taki jakim się nam wydaje.\n\nNaucz się widzieć go inaczej.\n\nMISZKA:)";
+        let i = 0;
+        
+        function typeText() {
+            if (i < text.length) {
+                document.getElementById("intro").textContent += text.charAt(i);
+                i++;
+                setTimeout(typeText, 150);
+            } else {
+                setTimeout(() => {
+                    document.getElementById("intro").style.display = 'none';
+                    document.querySelector('.bias').style.display = 'block';
+                }, 1000);
+            }
+        }
+
+        window.onload = typeText;
+        
+        function randomBias() {
+            const randomIndex = Math.floor(Math.random() * biases.length);
+            return biases[randomIndex];
+        }
+
+        function updateBias(element) {
+            const bias = randomBias();
+            element.querySelector('h2').textContent = bias.title;
+            element.querySelector('p:nth-child(2)').textContent = bias.description;
+            element.querySelector('.example').innerHTML = `Przykład: <span class="glitch">"${bias.example}"</span>`;
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <p id="intro" class="intro"></p>
+        <div class="bias" onclick="updateBias(this)">
+            <h2>Efekt potwierdzenia</h2>
+            <p>Skłonność do szukania, interpretowania i zapamiętywania informacji w sposób, który potwierdza nasze przekonania.</p>
+            <p class="example">Przykład: <span class="glitch">"Wiedziałem, że ta dieta działa, bo przeczytałem trzy artykuły potwierdzające jej skuteczność."</span></p>
+        </div>
+    </div>
+</body>
+</html>
