@@ -45,25 +45,345 @@
     <script>
         const biases = [
             {
-                title: "Efekt potwierdzenia",
-                description: "Skłonność do szukania, interpretowania i zapamiętywania informacji w sposób, który potwierdza nasze przekonania.",
-                example: "Wiedziałem, że ta dieta działa, bo przeczytałem trzy artykuły potwierdzające jej skuteczność."
-            },
-            {
-                title: "Efekt Dunninga-Krugera",
-                description: "Osoby o niskich kompetencjach przeceniają swoje umiejętności, a osoby bardzo kompetentne ich nie doceniają.",
-                example: "Prawie nic o tym nie wiem, ale jestem pewien, że mam rację."
-            },
-            {
-                title: "Awersja do straty",
-                description: "Strata boli bardziej niż cieszy zysk o tej samej wartości.",
-                example: "Nie sprzedam tej akcji, mimo że traci na wartości, bo nie chcę stracić pieniędzy."
-            },
-	    {
-		title:"Efekt autorytetu.",
-		description:"Poleganie wyłącznie na autorytecie.",
-		example:"Papież się nie myli bo jest Papieżem."
-	    }
+
+        "title": "Efekt autorytetu",
+
+        "description": "Poleganie wyłącznie na autorytecie.",
+
+        "example": "Papież się nie myli, bo jest Papieżem."
+
+    },
+
+    {
+
+        "title": "Efekt czystej ekspozycji",
+
+        "description": "Preferowanie rzeczy, które są znane lub często widziane.",
+
+        "example": "Lubię tę piosenkę, bo słyszałem ją już wiele razy."
+
+    },
+
+    {
+
+        "title": "Efekt izolacji",
+
+        "description": "Zapamiętywanie informacji, które są odosobnione lub wyróżniające się.",
+
+        "example": "Zapamiętałem tę dziwną reklamę, mimo że nie pamiętam reszty programu."
+
+    },
+
+    {
+
+        "title": "Efekt kontrastu",
+
+        "description": "Ocena rzeczy w kontekście innych rzeczy, które są z nimi porównywane.",
+
+        "example": "Ten film wydaje się świetny, zwłaszcza po tym, co ostatnio oglądałem."
+
+    },
+
+    {
+
+        "title": "Efekt litery z imienia",
+
+        "description": "Preferowanie informacji, które zawierają nasze imię lub inicjały.",
+
+        "example": "Zauważyłem, że reklama z moim imieniem przyciąga moją uwagę."
+
+    },
+
+    {
+
+        "title": "Efekt niepotrzebnych informacji",
+
+        "description": "Przeciążenie informacyjne, które prowadzi do błędnych decyzji.",
+
+        "example": "Zbyt wiele opcji w menu sprawiło, że nie mogłem się zdecydować."
+
+    },
+
+    {
+
+        "title": "Efekt Pollyanny",
+
+        "description": "Tendencja do postrzegania rzeczy w pozytywnym świetle.",
+
+        "example": "Mimo trudności, zawsze staram się dostrzegać pozytywy w każdej sytuacji."
+
+    },
+
+    {
+
+        "title": "Efekt pominięcia",
+
+        "description": "Ignorowanie istotnych informacji, które mogą wpłynąć na decyzję.",
+
+        "example": "Nie zwróciłem uwagi na negatywne opinie o produkcie, bo chciałem go kupić."
+
+    },
+
+    {
+
+        "title": "Efekt posiadania",
+
+        "description": "Przesadne wartościowanie rzeczy, które już posiadamy.",
+
+        "example": "Uważam, że mój samochód jest lepszy niż ten sam model, który ma mój przyjaciel."
+
+    },
+
+    {
+
+        "title": "Efekt potwierdzania",
+
+        "description": "Szukam informacji, które potwierdzają moje przekonania.",
+
+        "example": "Czytam tylko artykuły, które zgadzają się z moim zdaniem na dany temat."
+
+    },
+
+    {
+
+        "title": "Efekt przywiązania",
+
+        "description": "Trudność w rezygnacji z rzeczy, do których się przywiązaliśmy.",
+
+        "example": "Nie mogę sprzedać starego telefonu, mimo że mam nowy."
+
+    },
+
+    {
+
+        "title": "Efekt pseudopewności",
+
+        "description": "Przekonanie, że mamy większą kontrolę nad sytuacją, niż w rzeczywistości.",
+
+        "example": "Czuję się pewnie, że wygram w loterii, bo kupiłem kilka losów."
+
+    },
+
+    {
+
+        "title": "Efekt skupienia",
+
+        "description": "Skupianie się na jednym aspekcie sytuacji, ignorując inne.",
+
+        "example": "Zwracam uwagę tylko na cenę, nie myśląc o jakości produktu."
+
+    },
+
+    {
+
+        "title": "Efekt statusu quo",
+
+        "description": "Preferowanie obecnego stanu rzeczy i opór przed zmianą.",
+
+        "example": "Wolę zostać w tej pracy, mimo że nie jestem z niej zadowolony."
+
+    },
+
+    {
+
+        "title": "Efekt ślepej plamki",
+
+        "description": "Nie dostrzeganie własnych błędów, podczas gdy krytykujemy innych.",
+
+        "example": "Uważam, że moi znajomi są nietolerancyjni, ale nie widzę, że sam czasem tak postępuję."
+
+    },
+
+    {
+
+        "title": "Efekt wspierania decyzji",
+
+        "description": "Szukam potwierdzenia dla podjętej decyzji.",
+
+        "example": "Po zakupie nowego tele fonu, czytam recenzje, które potwierdzają, że dokonałem dobrego wyboru."
+
+    },
+
+    {
+
+        "title": "Efekt wyniku",
+
+        "description": "Ocena decyzji na podstawie jej wyniku, a nie procesu podejmowania.",
+
+        "example": "Uważam, że inwestycja była dobra, ponieważ przyniosła zysk, mimo że była podejmowana w pośpiechu."
+
+    },
+
+    {
+
+        "title": "Efekt wyswiadczonej przysługi",
+
+        "description": "Tendencja do faworyzowania osób, którym pomogliśmy.",
+
+        "example": "Pomogłem koledze w projekcie, więc czuję, że powinienem być jego pierwszym wyborem na przyszłość."
+
+    },
+
+    {
+
+        "title": "Efekt wiarygodności",
+
+        "description": "Przywiązywanie większej wagi do informacji od osób, które uważamy za wiarygodne.",
+
+        "example": "Zaufam recenzji od znanego krytyka, nawet jeśli nie zgadzam się z jego opinią."
+
+    },
+
+    {
+
+        "title": "Efekt zaprzeczania",
+
+        "description": "Odmowa akceptacji faktów, które są nieprzyjemne lub niezgodne z naszymi przekonaniami.",
+
+        "example": "Nie chcę wierzyć, że moje nawyki żywieniowe mogą być szkodliwe dla zdrowia."
+
+    },
+
+    {
+
+        "title": "Efekt zerowego ryzyka",
+
+        "description": "Preferowanie opcji, które eliminują ryzyko, nawet jeśli wiąże się to z mniejszymi korzyściami.",
+
+        "example": "Wolę trzymać pieniądze na koncie oszczędnościowym, zamiast inwestować je w akcje."
+
+    },
+
+    {
+
+        "title": "Efekt hiperbolicznego obniżenia wartości",
+
+        "description": "Przesadne obniżanie wartości przyszłych korzyści w porównaniu do bieżących.",
+
+        "example": "Wolę kupić coś teraz, niż czekać na lepszą ofertę w przyszłości."
+
+    },
+
+    {
+
+        "title": "Efekt ignorowania prawdopodobieństwa",
+
+        "description": "Nieprawidłowe ocenianie ryzyka na podstawie emocji, a nie faktów.",
+
+        "example": "Myślę, że nie wygram w loterii, więc nie kupuję losu, mimo że szanse są niewielkie."
+
+    },
+
+    {
+
+        "title": "Efekt iluzji pieniądza",
+
+        "description": "Przekonanie, że posiadanie pieniędzy daje większą kontrolę nad sytuacją.",
+
+        "example": "Czuję się bezpieczniej, gdy mam oszczędności, nawet jeśli nie są one potrzebne."
+
+    },
+
+    {
+
+        "title": "Efekt iluzji wstrząsu",
+
+        "description": "Przekonanie, że wydarzenia mają większy wpływ na nasze życie, niż w rzeczywistości.",
+
+        "example": "Myślę, że zmiana rządu wpłynie na moje życie codzienne, mimo że nie ma to bezpośredniego wpływu."
+
+    },
+
+    {
+
+        "title": "Klątwa wiedzy",
+
+        "description": "Trudność w zrozumieniu, jak to jest nie wiedzieć czegoś, co już wiemy.",
+
+        "example": "Nie mogę zrozumieć, dlaczego ktoś nie rozumie prostych zasad gry, którą znam od lat."
+
+    },
+
+    {
+
+        "title": "Efekt niechęci do straty",
+
+        "description": "Silniejsza reakcja na straty niż na zyski.",
+
+        "example": "Bardziej martwię się o utratę pieniędzy niż o możliwość ich zyskania."
+
+    },
+
+    {
+
+        "title": "Efekt racjonalizacji zakupu",
+
+        "description": "Uzasadnianie zakupu, aby poczuć się lepiej z podjętą decyzją.",
+
+        "example": "Kupiłem drogi telefon, bo myślę, że będzie mi służył przez dłuższy czas."
+
+    },
+
+    {
+
+        "title": "Efekt selektywnej percepcji",
+
+        "description": "Zauważanie tylko tych informacji, które potwierdzają nasze przekonania.",
+
+        "example": "Widzę tylko negatywne opinie o konkurencyjnych produktach, bo chcę wierzyć, że mój wybór był najlepszy."
+
+    },
+
+    {
+
+        "title": "Efekt skrzywienia zawodowego",
+
+        "description": "Postrzeganie sytuacji przez pryzmat własnej profesji lub doświadczenia.",
+
+        "example": "Jako nauczyciel, zawsze dostrzegam błędy w sposobie nauczania innych."
+
+    },
+
+    {
+
+        "title": "Zasada podczepiania",
+
+        "description": "Przypisywanie pozytywnych cech do rzeczy, które są z nami związane.",
+
+        "example": "Uważam, że mój ulubiony zespół jest najlepszy, bo ich muzyka towarzyszyła mi w ważnych momentach życia."
+
+    },
+
+    {
+
+        "title": "Zjawisko G.I. Joe",
+
+        "description": "Przekonanie, że wiedza o błędach poznawczych sprawia, że jesteśmy od nich wolni.",
+
+        "example": "Wiem, że nie powinienem ufać reklamom, ale i tak kupiłem ten produkt."
+
+    },
+
+    {
+
+        "title": "Złudzenie kontroli",
+
+        "description": "Przekonanie, że mamy większą kontrolę nad sytuacjami losowymi, niż w rzeczywistości.",
+
+        "example": "Czuję, że mogę wpłynąć na wynik meczu, gdy oglądam go w telewizji."
+
+    },
+
+    {
+
+        "title": "Złudzenie planowania",
+
+        "description": "Przesadne optymistyczne przewidywanie czasu potrzebnego na wykonanie zadania.",
+
+        "example": "Myślałem, że napisanie pracy zajmie mi tylko kilka godzin, a spędziłem nad nią cały weekend."
+
+    }
+		
 		
         ];
         
